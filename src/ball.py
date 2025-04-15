@@ -3,10 +3,10 @@ import pygame
 from constantes import WHITE, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Ball:
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius,color = WHITE):
         super().__init__()
         self.image = pygame.Surface((30, 30))
-        self.image.fill(WHITE)
+        self.image.fill(color)
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, SCREEN_WIDTH - self.rect.width)
         self.rect.y = random.randint(-100, -40)
