@@ -5,8 +5,8 @@ import random
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 1024
 
 # Colors
 WHITE = (255, 255, 255)
@@ -58,6 +58,9 @@ class Ball(pygame.sprite.Sprite):
             self.rect.x = random.randint(0, SCREEN_WIDTH - self.rect.width)
             self.rect.y = random.randint(-100, -40)
             self.speed_y = random.randint(1, 8)
+            
+    def decale(self, decale):
+        self.rect.x += decale
 
 # Bullet class
 class Bullet(pygame.sprite.Sprite):
@@ -108,12 +111,21 @@ while running:
     # Check for collisions
     hits = pygame.sprite.groupcollide(bullets, balls, True, True)
     for hit in hits:
-        ball = Ball()
-        balls.add(ball)
-        all_sprites.add(ball)
+        ball1 = Ball()
+        ball1.decale(50)
+        balls.add(ball1)
+        all_sprites.add(ball1)
+        
+        ball2 = Ball()
+        ball2.decale(-50)
+        balls.add(ball2)
+        all_sprites.add(ball2)
 
     # Draw / render
-    screen.fill(BLACK)
+    
+    texture = pygame.image.load('./assets/bg.jpg')
+    
+    screen.blit(texture, (0, 0))
     all_sprites.draw(screen)
 
     # Flip the display
