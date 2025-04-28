@@ -36,6 +36,11 @@ class Player(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.rect.left = 0
     
+    def kill(self):
+        self.wheelL.kill()
+        self.wheelR.kill()
+        super().kill()
+    
     def getWheels(self):
         return (self.wheelL,self.wheelR)
             
