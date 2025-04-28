@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Ball Blast")
 texture = pygame.image.load('./assets/bg.jpg')
 
-ball_level = [[RED,30],[GREEN,25],[BLUE,20]]
+ball_level = [[BLACK,50],[RED,30],[GREEN,25],[BLUE,20]]
 perdu = False
 
 # Initialize player, balls, and bullets
@@ -33,7 +33,7 @@ all_sprites.add(wheels[0])
 all_sprites.add(wheels[1])
 
 for _ in range(8):
-    newball = Ball(random.randint(0, SCREEN_WIDTH - 30),random.randint(-100, -40),30)
+    newball = Ball(random.randint(0, SCREEN_WIDTH),random.randint(-100, -40),ball_level[0][1],0,ball_level[0][0])
     balls.add(newball)
     all_sprites.add(newball)
 
@@ -51,12 +51,14 @@ while running:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 all_sprites.add(bullet)
                 bullets.add(bullet)
+            elif event.key == pygame.K_ESCAPE:
+                running = False
 
     # Update
     all_sprites.update()
 
     # Check for collisions
-    hitBalls = pygame.sprite.groupcollide(balls, bullets, True, True)
+    hitBalls: dict[Ball,list[Bullet]] = pygame.sprite.groupcollide(balls, bullets, True, True)
     for hit in hitBalls:
         if hit.level < len(ball_level)-1:
             ball1 = Ball(hit.rect.x,-40,ball_level[hit.level+1][1],hit.level+1,ball_level[hit.level+1][0])
@@ -91,3 +93,4 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
+exit(0)
