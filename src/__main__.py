@@ -1,16 +1,14 @@
 from ball import Ball
 from bullet import Bullet
 from player import Player
-from constantes import WHITE,BLACK,RED,GREEN,BLUE, SCREEN_WIDTH, SCREEN_HEIGHT
+from constantes import WHITE,BLACK,RED,GREEN,BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT
+from menu import showMenu
 
 import pygame
 import random
 
 # Initialize Pygame
 pygame.init()
-pygame.font.init()
-
-Font = pygame.font.SysFont('Comic Sans MS', 30)
 
 # Set up the display
 screen : pygame.Surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -20,7 +18,7 @@ pygame.display.set_caption("Ball Blast")
 ball_level = [[BLACK,40],[WHITE,35],[RED,30],[GREEN,25],[BLUE,20]]
 perdu : bool = False
 shootCD : int = 0
-texture : pygame.Surface = pygame.image.load('./assets/bg.jpg')
+texture : pygame.Surface = pygame.transform.scale(pygame.image.load('./assets/bg.jpg'),(SCREEN_WIDTH*1.5,SCREEN_HEIGHT*1.5))
 
 frameNumber : int = 0
 path : str = "./assets/explosion_frames/frame-"
@@ -100,7 +98,7 @@ while running:
     # Draw / render
     
     # On render le fond en premier sinon tout est derrière
-    screen.blit(texture, (0,0))
+    screen.blit(texture, (-150,-100))
     
     all_sprites.draw(screen)
     
@@ -112,7 +110,7 @@ while running:
         player.kill()
         
     if perdu:
-        text_surface = Font.render('PERDUUUUUUU', False, (0, 0, 0))
+        text_surface = FONT.render('PERDUUUUUUU', False, (0, 0, 0))
         screen.blit(text_surface,(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         
         if frameNumber < 17:
@@ -124,8 +122,8 @@ while running:
             screen.blit(deathImage,(player.rect.left-20,player.rect.top-80))
     
     #Si il n'y a plus aucune balle, il gagne
-    if len(balls.sprites()) == 0:
-        text_surface = Font.render('GAGNÉ', False, (0, 0, 0))
+    if len(balls.sprites()) == 0 and not perdu:
+        text_surface = FONT.render('GAGNÉ', False, (0, 0, 0))
         screen.blit(text_surface,(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
     # Flip the display
