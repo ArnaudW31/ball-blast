@@ -1,11 +1,10 @@
 import pygame
 from constantes import RED, SCREEN_WIDTH, SCREEN_HEIGHT
 
-# https://stackoverflow.com/questions/4183208/how-do-i-rotate-an-image-around-its-center-using-pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.canon = pygame.transform.scale(pygame.image.load("assets/canon.png"),(50,100))
+        self.canon = pygame.transform.scale(pygame.image.load("assets/canon.png"),(33,66))
         self.rect = self.canon.get_rect()
         self.image = self.canon
         self.rect.centerx = SCREEN_WIDTH // 2
@@ -29,8 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speed_x
         self.wheelL.translate(self.speed_x)
         self.wheelR.translate(self.speed_x)
-        self.wheelL.rotate(self.speed_x*1.4)
-        self.wheelR.rotate(self.speed_x*1.4)
+        self.wheelL.rotate(self.speed_x*-1.4)
+        self.wheelR.rotate(self.speed_x*-1.4)
         
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
@@ -53,6 +52,10 @@ class Wheel(pygame.sprite.Sprite):
         
     def translate(self,x):
         self.rect.x += x
+        if self.rect.right > SCREEN_WIDTH + self.xoffset:
+            self.rect.right = SCREEN_WIDTH + self.xoffset
+        if self.rect.left < 0 + self.xoffset:
+            self.rect.left = 0 + self.xoffset
     
         
     def rotate(self,angle):
