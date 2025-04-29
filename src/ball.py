@@ -38,7 +38,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y = y
         
         # Vitesse de déplacement
-        self.speed_y: int = random.randint(1, 8)
+        self.speed_y: int = -2
         self.speed_x: int = random.randint(1, 2) * (-1)**random.randint(1, 2)
     
     def _generate_rock_shape(self) -> list[tuple[int, int]]:
@@ -78,6 +78,10 @@ class Ball(pygame.sprite.Sprite):
         
     def decale(self, decale: int):
         self.rect.x += decale
+        
+        if self.speed_x * decale < 0:
+            self.speed_x *= -1
+    
         
     def level(self)->int:
         return self.level

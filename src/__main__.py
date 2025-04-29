@@ -77,10 +77,10 @@ while running:
             if hit.level < len(ball_level)-1:
                 
                 #On crée une boule aux mêmes co que la boule détruite
-                ball1 = Ball(hit.rect.x,-40,ball_level[hit.level+1][1],hit.level+1,ball_level[hit.level+1][0])
+                ball1 = Ball(hit.rect.x,hit.rect.y,ball_level[hit.level+1][1],hit.level+1,ball_level[hit.level+1][0])
                 
                 #on la décale à droite
-                ball1.decale(50)
+                ball1.decale(10)
                 
                 #Ajout au groupe de collision des boules
                 balls.add(ball1)
@@ -90,10 +90,10 @@ while running:
                 
                 
                 #On crée une autre boule
-                ball2 = Ball(hit.rect.x,-40,ball_level[hit.level+1][1],hit.level+1,ball_level[hit.level+1][0])
+                ball2 = Ball(hit.rect.x,hit.rect.y,ball_level[hit.level+1][1],hit.level+1,ball_level[hit.level+1][0])
                 
                 #On la décale à gauche
-                ball2.decale(-50)
+                ball2.decale(-10)
                 
                 #Ajout au groupe de collision des boules
                 balls.add(ball2)
