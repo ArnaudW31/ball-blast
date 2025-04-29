@@ -24,7 +24,8 @@ class Ball(pygame.sprite.Sprite):
         pygame.draw.polygon(self.image, self.color, self.points)
         
         # Dessiner les points de vie
-        self.life_points:int = random.randint(1, radius)
+        self.base_life_points:int = random.randint(1, radius)
+        self.life_points:int = self.base_life_points
         self.life_points_surface = font.render(str(self.life_points), True, WHITE)
         self.life_points_surface_rect = self.life_points_surface.get_rect()
         self.life_points_surface_rect.center = (self.radius, self.radius)

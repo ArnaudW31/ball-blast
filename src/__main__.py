@@ -74,6 +74,7 @@ while running:
         destroyed : bool = hit.take_damage()
         #Si la boule touchée n'est pas la plus petite
         if destroyed:
+            player.score += hit.base_life_points
             if hit.level < len(ball_level)-1:
                 
                 #On crée une boule aux mêmes co que la boule détruite
@@ -118,14 +119,11 @@ while running:
         
     if perdu:
         text_surface = FONT.render('PERDUUUUUUU', False, (0, 0, 0))
-        screen.blit(text_surface,(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text_surface,(SCREEN_WIDTH // 2 - text_surface.get_width() // 2, SCREEN_HEIGHT // 2 - text_surface.get_height() // 2))
         
         if frameNumber < 17:
             frameNumber += 1
-            if frameNumber <= 9 :
-                deathImage = pygame.image.load(path + "0" + str(frameNumber) + ".png")
-            else:
-                deathImage = pygame.image.load(path + str(frameNumber) + ".png")
+            deathImage = pygame.image.load(path + str(frameNumber).zfill(2) + ".png")
             screen.blit(deathImage,(player.rect.left-20,player.rect.top-80))
     
     #Si il n'y a plus aucune balle, il gagne
@@ -133,6 +131,10 @@ while running:
         text_surface = FONT.render('GAGNÉ', False, (0, 0, 0))
         screen.blit(text_surface,(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
+    #Affiche le score
+    score_surface = FONT.render(f'Score: {player.score}', False, (0, 0, 0))
+    screen.blit(score_surface, (10, 10))
+    
     # Flip the display
     pygame.display.flip()
 

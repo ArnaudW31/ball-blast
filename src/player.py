@@ -14,6 +14,8 @@ class Player(pygame.sprite.Sprite):
         self.wheelR = Wheel(20)
         
         self.speed_x = 0
+        
+        self.score = 0
 
     def update(self):
         self.speed_x = 0
