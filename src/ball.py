@@ -24,7 +24,7 @@ class Ball(pygame.sprite.Sprite):
         pygame.draw.polygon(self.image, self.color, self.points)
         
         # Dessiner les points de vie
-        self.life_points:int = random.randint(1, 50)
+        self.life_points:int = random.randint(1, radius)
         self.life_points_surface = font.render(str(self.life_points), True, WHITE)
         self.life_points_surface_rect = self.life_points_surface.get_rect()
         self.life_points_surface_rect.center = (self.radius, self.radius)
@@ -39,7 +39,7 @@ class Ball(pygame.sprite.Sprite):
         
         # Vitesse de déplacement
         self.speed_y: int = random.randint(1, 8)
-        self.speed_x: int = random.randint(-2, 2)
+        self.speed_x: int = random.randint(1, 2) * (-1)**random.randint(1, 2)
     
     def _generate_rock_shape(self) -> list[tuple[int, int]]:
         """Génère des points pour créer une forme de roche irrégulière"""
@@ -59,10 +59,22 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y += self.speed_y
         self.rect.x += self.speed_x
         
-        self.speed_x = -self.speed_x if self.rect.x < 0 or self.rect.x > SCREEN_WIDTH - self.radius else self.speed_x 
-        self.speed_y = -8 if self.rect.bottom > SCREEN_HEIGHT else self.speed_y + 0.1
+        self.speed_x = -self.speed_x if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH else self.speed_x 
+        self.speed_y = random.randint(-9, -7) if self.rect.bottom > SCREEN_HEIGHT else self.speed_y + 0.1
         
-            
+    def take_damage(self) -> bool:
+        self.life_points -= 1
+        
+        self.life_points_surface = font.render(str(self.life_points), True, WHITE)
+        self.life_points_surface_rect = self.life_points_surface.get_rect()
+        self.life_points_surface_rect.center = (self.radius, self.radius)
+        
+        self.image = pygame.Surface((self.image.get_rect().width, self.image.get_rect().width), pygame.SRCALPHA)
+        
+        pygame.draw.polygon(self.image, self.color, self.points)
+        self.image.blit(self.life_points_surface, self.life_points_surface_rect)
+        
+        return self.life_points == 0
         
     def decale(self, decale: int):
         self.rect.x += decale
