@@ -1,5 +1,5 @@
 import pygame
-from constantes import RED, SCREEN_WIDTH, SCREEN_HEIGHT
+from constantes import RED, SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -21,9 +21,9 @@ class Player(pygame.sprite.Sprite):
         self.speed_x = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.speed_x = -5
+            self.speed_x = -PLAYER_SPEED
         if keys[pygame.K_RIGHT]:
-            self.speed_x = 5
+            self.speed_x = PLAYER_SPEED
         
         w, h = self.image.get_size()
         
