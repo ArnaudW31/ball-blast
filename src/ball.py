@@ -1,7 +1,7 @@
 import random
 import pygame
 import math
-from constantes import RED, SCREEN_WIDTH, SCREEN_HEIGHT, WHITE
+from constantes import RED, SCREEN_WIDTH, SCREEN_HEIGHT, WHITE, BALL_SPEED_X, BALL_SPEED_FALL, BALL_TOP_BOUNCE, BALL_BOTTOM_BOUNCE
 
 # Font
 pygame.init()
@@ -39,7 +39,7 @@ class Ball(pygame.sprite.Sprite):
         
         # Vitesse de déplacement
         self.speed_y: int = -2
-        self.speed_x: int = random.randint(1, 2) * (-1)**random.randint(1, 2)
+        self.speed_x: int = random.randint(1*BALL_SPEED_X, 2*BALL_SPEED_X) * (-1)**random.randint(1, 2)
     
     def _generate_rock_shape(self) -> list[tuple[int, int]]:
         """Génère des points pour créer une forme de roche irrégulière"""
@@ -60,7 +60,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x += self.speed_x
         
         self.speed_x = -self.speed_x if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH else self.speed_x 
-        self.speed_y = random.randint(-9, -7) if self.rect.bottom > SCREEN_HEIGHT else self.speed_y + 0.1
+        self.speed_y = random.randint(BALL_TOP_BOUNCE, BALL_BOTTOM_BOUNCE) if self.rect.bottom > SCREEN_HEIGHT else self.speed_y + BALL_SPEED_FALL
         
     def take_damage(self) -> bool:
         self.life_points -= 1
