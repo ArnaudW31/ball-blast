@@ -2,7 +2,6 @@ from ball import Ball
 from bullet import Bullet
 from player import Player
 from constantes import WHITE,BLACK,RED,GREEN,BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT
-from menu import showMenu
 
 import pygame
 import random
@@ -68,7 +67,7 @@ while running:
     all_sprites.update()
 
     # Check for collisions
-    hitBalls: dict[Ball,list[Bullet]] = pygame.sprite.groupcollide(balls, bullets, False, True)
+    hitBalls = pygame.sprite.groupcollide(balls, bullets, False, True)
     for hit in hitBalls:
         
         destroyed : bool = hit.take_damage()

@@ -8,13 +8,13 @@ pygame.init()
 font = pygame.font.SysFont('Arial', 24)
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, radius: int, level: int = 0, color: tuple[int,int,int] = RED):
+    def __init__(self, x: int, y: int, radius: int, level: int = 0, color = RED):
         super().__init__()
         # Créer une surface transparente
         self.image = pygame.Surface((radius*2, radius*2), pygame.SRCALPHA)
         self.level: int = level
         self.life: int = 3
-        self.color: tuple[int,int,int] = color
+        self.color = color
         self.radius: int = radius
         
         # Générer des points pour créer un polygone irrégulier
@@ -42,7 +42,7 @@ class Ball(pygame.sprite.Sprite):
         self.speed_y: int = -2
         self.speed_x: int = random.randint(1, 2) * (-1)**random.randint(1, 2)
     
-    def _generate_rock_shape(self) -> list[tuple[int, int]]:
+    def _generate_rock_shape(self):
         """Génère des points pour créer une forme de roche irrégulière"""
         points = []
         num_points = random.randint(6, 8)  # Nombre de points du polygone

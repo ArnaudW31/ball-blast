@@ -1,8 +1,8 @@
 import pygame.font
 
 # Screen dimensions
-SCREEN_WIDTH = 625
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 850 #1240
+SCREEN_HEIGHT = 650 #1024
 
 # Colors
 WHITE = (255, 255, 255)

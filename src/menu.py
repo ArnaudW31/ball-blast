@@ -2,7 +2,7 @@ import pygame
 
 from constantes import WHITE,BLACK,RED,GREEN,BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT
 
-texture : pygame.Surface = pygame.transform.scale(pygame.image.load('./assets/bg.jpg'),(SCREEN_WIDTH*1.5,SCREEN_HEIGHT*1.5))
+texture : pygame.Surface = pygame.transform.scale(pygame.image.load('./assets/bg.jpg'),(SCREEN_WIDTH*1,SCREEN_HEIGHT*1))
 
 selectedOption = 0
 
@@ -20,7 +20,7 @@ def showMenu(screen : pygame.Surface) -> pygame.Surface:
             else:
                 selectedOption += 1
             
-    screen.blit(texture, (-150,-100))
+    screen.blit(texture, (0,0))
     
     text_surface = FONT.render('COMMENCER', False, (0, 0, 0))
     screen.blit(text_surface,(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
