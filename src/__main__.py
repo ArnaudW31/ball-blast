@@ -10,33 +10,38 @@ pygame.init()
 
 # Set up the display
 pygame.display.set_caption("Ball Blast")
+screen: pygame.Surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Game loop
 running = True
 clock = pygame.time.Clock()
 
-menu : Menu = Menu()
+menu: Menu = Menu(screen)
+game: Game = None
 
+# Gestion des états
 gameState = False
+pause = False
+newGame = False
 
-screen : pygame.Surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 while running:
-    clock.tick(40)
-    
+
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
             running = False
-    
+
     if not gameState:
-        screen, gameState  = menu.showMenu(screen, events)
-        if gameState :
-            game : Game = Game()
+        gameState, newGame = menu.showMenu(events, pause)
+        if gameState and newGame:
+            game = Game(screen)
+            newGame = False
     else:
-        screen, gameState = game.showGame(screen)
-    # Flip the display
-    pygame.display.flip()
+        gameState, pause = game.showGame()
+
+    pygame.display.update()
+    clock.tick(40)
 
 pygame.quit()
 exit(0)
