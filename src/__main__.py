@@ -4,9 +4,12 @@ from game import Game
 
 import pygame
 import random
+import os
 
 # Initialize Pygame
 pygame.init()
+
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 # Set up the display
 pygame.display.set_caption("Ball Blast")

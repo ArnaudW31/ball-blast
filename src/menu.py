@@ -8,7 +8,7 @@ class Menu():
         self.screen: pygame.Surface = screen
         self.selectedOption: int = 0
         self.texture: pygame.Surface = pygame.transform.scale(
-            pygame.image.load('./assets/bg.jpg').convert(), (SCREEN_WIDTH, SCREEN_HEIGHT))
+            pygame.image.load('./assets/bg_pxl.jpg').convert(), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     def showMenu(self, keyEvent, pause: bool = False) -> bool:
         newGame: bool = False
@@ -38,10 +38,16 @@ class Menu():
                         elif self.selectedOption == 1:
                             newGame = True
                             goTogame = True
+                        elif self.selectedOption == 3:
+                            pygame.quit()
+                            exit(0)
                     else:
                         if self.selectedOption == 0:
                             goTogame = True
                             newGame = True
+                        elif self.selectedOption == 2:
+                            pygame.quit()
+                            exit(0)
 
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
@@ -65,7 +71,7 @@ class Menu():
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
         text_surface = FONT.render(
-            'CRÉDITS', False, (0, 0, 0))  # Justin c'est pour toi
+            'CRÉDITS', False, (0, 0, 0))  # Merci
         self.screen.blit(text_surface, (SCREEN_WIDTH //
                                         2, (SCREEN_HEIGHT // 2) + 100 + delta))
 

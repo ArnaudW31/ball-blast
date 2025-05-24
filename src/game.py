@@ -10,15 +10,22 @@ import random
 class Game():
     def __init__(self, screen: pygame.Surface):
         self.screen: pygame.Surface = screen
-
+        self.level = 0
         # Création des variables de jeu
         self.ball_level = [[BLACK, 40], [RED, 30], [GREEN, 25], [BLUE, 20]]
+        self.ballEquivalents = [10,5,3,1]
+        self.ballsToSpawn = 14
         self.perdu: bool = False
         self.shootCD: int = 0
         self.texture: pygame.Surface = pygame.transform.scale(
-            pygame.image.load('./assets/bg.jpg'), (SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5))
+            pygame.image.load('./assets/bg_pxl.jpg'), (SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5))
 
-        self.frameNumber: int = 0
+        # Compteurs de frames pour laisser du temps avant de passer à la suite
+        self.frameNumberLoseAnim: int = 0
+        self.frameNumberWinAnim : int = 0
+        self.frameNumberSpawnBalls : int = 0
+        self.frameNumberBeginLevel: int = 0
+        
         self.shootCD: int = 0
         self.path: str = "./assets/explosion_frames/frame-"
         self.perdu = False
@@ -34,26 +41,45 @@ class Game():
         self.all_sprites.add(self.playerGroup)
         self.all_sprites.add(wheels[0])
         self.all_sprites.add(wheels[1])
-
-        # Création des boules
-        for _ in range(2):
-            newball = Ball(random.randint(100, SCREEN_WIDTH-100),
-                           random.randint(-100, -40), self.ball_level[0][1], 0, self.ball_level[0][0])
-            self.balls.add(newball)
-            self.all_sprites.add(newball)
+    
+    #Crée toutes les boules et les ajoutes dans le jeu
+    def createBalls(self):
+        while True:
+            ballType : int = random.randint(0,len(self.ball_level)-1)
+            if self.ballEquivalents[ballType] <= self.ballsToSpawn:
+                newball = Ball(random.randint(100, SCREEN_WIDTH-100),
+                        random.randint(-100, -40), self.ball_level[ballType][1], ballType, self.ball_level[ballType][0])
+                self.balls.add(newball)
+                self.all_sprites.add(newball)
+                self.ballsToSpawn -= self.ballEquivalents[ballType]
+                return
+       
+    #Passe au niveau suivant     
+    def nextLevel(self):
+        self.level += 1
+        self.ballsToSpawn = 14 + self.level * 5
+        
+        self.frameNumberWinAnim : int = 0
+        self.frameNumberSpawnBalls : int = 0
+        self.frameNumberBeginLevel = 0
 
     def showGame(self) -> tuple[bool, bool]:
 
         if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-            return False, True
-
-        if self.perdu:
-            return False, False
+            if self.perdu:
+                return False,False
+            else:
+                return False, True
 
         self.shootCD += 1
+        
+        if self.ballsToSpawn > 0:
+            if self.frameNumberSpawnBalls % 20 == 0:
+                self.createBalls()
+            self.frameNumberSpawnBalls += 1
 
         # Toutes les 10 frames, on tire
-        if self.shootCD == FIRERATE:
+        if self.shootCD == FIRERATE and not self.perdu:
             self.shootCD = 0
             bullet = Bullet(self.player.rect.centerx, self.player.rect.top)
             self.all_sprites.add(bullet)
@@ -119,14 +145,14 @@ class Game():
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
-            if self.frameNumber < 17:
-                self.frameNumber += 1
-                if self.frameNumber <= 9:
+            if self.frameNumberLoseAnim < 17:
+                self.frameNumberLoseAnim += 1
+                if self.frameNumberLoseAnim <= 9:
                     deathImage = pygame.image.load(
-                        self.path + "0" + str(self.frameNumber) + ".png")
+                        self.path + "0" + str(self.frameNumberLoseAnim) + ".png")
                 else:
                     deathImage = pygame.image.load(
-                        self.path + str(self.frameNumber) + ".png")
+                        self.path + str(self.frameNumberLoseAnim) + ".png")
                 self.screen.blit(deathImage, (self.player.rect.left -
                                               20, self.player.rect.top-80))
 

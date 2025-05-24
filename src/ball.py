@@ -60,7 +60,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.y += self.speed_y
         self.rect.x += self.speed_x
         
-        self.speed_x = -self.speed_x if self.rect.left < 0 or self.rect.right > SCREEN_WIDTH else self.speed_x 
+        self.speed_x = -self.speed_x if (self.rect.left < 0 and self.speed_x < 0) or (self.rect.right > SCREEN_WIDTH and self.speed_x > 0) else self.speed_x 
         self.speed_y = random.randint(BALL_TOP_BOUNCE, BALL_BOTTOM_BOUNCE) if self.rect.bottom > SCREEN_HEIGHT else self.speed_y + BALL_SPEED_FALL
         
     def take_damage(self) -> bool:
