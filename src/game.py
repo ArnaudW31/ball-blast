@@ -1,7 +1,7 @@
 from ball import Ball
 from bullet import Bullet
 from player import Player
-from constantes import WHITE, BLACK, RED, GREEN, BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT, FIRERATE
+from constantes import WHITE, BLACK, RED, GREEN, BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT, FIRERATE, BALL_EQUIVALENT
 
 import pygame
 import random
@@ -12,9 +12,9 @@ class Game():
         self.screen: pygame.Surface = screen
         self.level = 0
         # Création des variables de jeu
-        self.ball_level = [[BLACK, 40], [RED, 30], [GREEN, 25], [BLUE, 20]]
-        self.ballEquivalents = [10,5,3,1]
-        self.ballsToSpawn = 14
+        self.ball_level = [[BLACK, 50], [RED, 40], [GREEN, 33], [BLUE, 25]]
+        self.ballEquivalents = [10,7,3,1]
+        self.ballsToSpawn = BALL_EQUIVALENT
         self.perdu: bool = False
         self.shootCD: int = 0
         self.texture: pygame.Surface = pygame.transform.scale(
@@ -57,14 +57,20 @@ class Game():
     #Passe au niveau suivant     
     def nextLevel(self):
         self.level += 1
-        self.ballsToSpawn = 14 + self.level * 5
+        self.ballsToSpawn = BALL_EQUIVALENT + self.level * 5
         
         self.frameNumberWinAnim : int = 0
         self.frameNumberSpawnBalls : int = 0
         self.frameNumberBeginLevel = 0
 
     def showGame(self) -> tuple[bool, bool]:
-
+        
+        if self.frameNumberBeginLevel < 60:
+            self.frameNumberBeginLevel += 1
+            self.screen.blit(self.texture, (-150, -100))
+            self.screen.blit(FONT.render('NIVEAU ' + str(self.level), True, (0, 0, 0)),(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            return True, False
+            
         if pygame.key.get_pressed()[pygame.K_ESCAPE]:
             if self.perdu:
                 return False,False
@@ -161,5 +167,9 @@ class Game():
             text_surface = FONT.render('GAGNÉ', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            
+            if self.frameNumberWinAnim == 300 and not self.perdu:
+                self.nextLevel()
+            self.frameNumberWinAnim += 1
 
         return True, False
