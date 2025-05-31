@@ -8,6 +8,7 @@ import os
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -27,6 +28,10 @@ gameState = False
 pause = False
 newGame = False
 
+playMusic = True
+
+pygame.mixer.music.load("assets/sound/menu.mp3")
+pygame.mixer.music.play()
 
 while running:
 
@@ -40,8 +45,21 @@ while running:
         if gameState and newGame:
             game = Game(screen)
             newGame = False
+        
+        #Si on passe du menu au jeu
+        if gameState:
+            playMusic = True
     else:
         gameState, pause = game.showGame()
+        if playMusic:
+            pygame.mixer.music.load("./assets/sound/music" + str(random.randint(1,3)) + ".mp3")
+            pygame.mixer.music.play(loops=-1)
+            playMusic = False
+        
+        #Si on passe du jeu au menu
+        if not gameState:
+            pygame.mixer.music.load("assets/sound/menu.mp3")
+            pygame.mixer.music.play()
 
     pygame.display.update()
     clock.tick(40)

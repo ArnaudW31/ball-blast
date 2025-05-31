@@ -9,6 +9,7 @@ class Menu():
         self.selectedOption: int = 0
         self.texture: pygame.Surface = pygame.transform.scale(
             pygame.image.load('./assets/bg_pxl.jpg').convert(), (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.sonMenu = pygame.mixer.Sound("./assets/sound/bip.mp3")
 
     def showMenu(self, keyEvent, pause: bool = False) -> bool:
         newGame: bool = False
@@ -21,17 +22,20 @@ class Menu():
         for event in keyEvent:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
+                    pygame.mixer.Sound.play(self.sonMenu)
                     if self.selectedOption == numberOfOptions:
                         self.selectedOption = 0
                     else:
                         self.selectedOption += 1
                 if event.key == pygame.K_UP:
+                    pygame.mixer.Sound.play(self.sonMenu)
                     if self.selectedOption == 0:
                         self.selectedOption = numberOfOptions
                     else:
                         self.selectedOption -= 1
 
                 if event.key == pygame.K_a:
+                    pygame.mixer.Sound.play(self.sonMenu)
                     if pause:
                         if self.selectedOption == 0:
                             goTogame = True

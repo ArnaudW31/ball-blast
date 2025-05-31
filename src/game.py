@@ -26,6 +26,11 @@ class Game():
         self.frameNumberSpawnBalls : int = 0
         self.frameNumberBeginLevel: int = 0
         
+        # Sons
+        self.sonExplosion = pygame.mixer.Sound("./assets/sound/explosion.mp3")
+        self.sonWin = pygame.mixer.Sound("./assets/sound/win.mp3")
+        self.sonPop = pygame.mixer.Sound("./assets/sound/pop.mp3")
+        
         self.shootCD: int = 0
         self.path: str = "./assets/explosion_frames/frame-"
         self.perdu = False
@@ -103,7 +108,7 @@ class Game():
             # Si la boule touchée n'est pas la plus petite
             if destroyed:
                 if hit.level < len(self.ball_level)-1:
-
+                    pygame.mixer.Sound.play(self.sonPop)
                     # On crée une boule aux mêmes co que la boule détruite
                     ball1 = Ball(
                         hit.rect.x, hit.rect.y, self.ball_level[hit.level+1][1], hit.level+1, self.ball_level[hit.level+1][0])
@@ -150,6 +155,10 @@ class Game():
             text_surface = FONT.render('PERDUUUUUUU', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            if self.frameNumberLoseAnim == 0:
+                pygame.mixer.Sound.play(self.sonExplosion)
+                pygame.mixer.music.load("./assets/sound//musicdeath.mp3")
+                pygame.mixer.music.play()
 
             if self.frameNumberLoseAnim < 17:
                 self.frameNumberLoseAnim += 1
@@ -168,7 +177,10 @@ class Game():
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             
-            if self.frameNumberWinAnim == 300 and not self.perdu:
+            if self.frameNumberWinAnim == 0 and not self.perdu:
+                pygame.mixer.Sound.play(self.sonWin)
+            
+            if self.frameNumberWinAnim == 240 and not self.perdu:
                 self.nextLevel()
             self.frameNumberWinAnim += 1
 
