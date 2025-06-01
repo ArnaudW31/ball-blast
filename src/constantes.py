@@ -24,3 +24,4 @@ pygame.font.init()
 
 #Fonts
 FONT = pygame.font.SysFont('Comic Sans MS', 30)
+FONT_SCORE = pygame.font.SysFont('Comic Sans MS', 18)

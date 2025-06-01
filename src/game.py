@@ -1,7 +1,7 @@
 from ball import Ball
 from bullet import Bullet
 from player import Player
-from constantes import WHITE, BLACK, RED, GREEN, BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT, FIRERATE, BALL_EQUIVALENT
+from constantes import WHITE, BLACK, RED, GREEN, BLUE, SCREEN_WIDTH, SCREEN_HEIGHT, FONT, FIRERATE, BALL_EQUIVALENT, FONT_SCORE
 
 import pygame
 import random
@@ -107,6 +107,7 @@ class Game():
             destroyed: bool = hit.take_damage()
             # Si la boule touchée n'est pas la plus petite
             if destroyed:
+                self.player.score += hit.base_life_points
                 if hit.level < len(self.ball_level)-1:
                     pygame.mixer.Sound.play(self.sonPop)
                     # On crée une boule aux mêmes co que la boule détruite
@@ -142,6 +143,13 @@ class Game():
         self.screen.blit(self.texture, (-150, -100))
 
         self.all_sprites.draw(self.screen)
+
+        # On affiche le score
+        self.score_box = pygame.Surface((150, 50), pygame.SRCALPHA)
+        pygame.draw.rect(self.score_box, (255, 255, 255, 180), self.score_box.get_rect(), border_radius=10)
+        self.score_texte = FONT_SCORE.render("Score : " + str(self.player.score), True, (0, 0, 0))
+        self.score_box.blit(self.score_texte, (10, 10))
+        self.screen.blit(self.score_box, (10, 10))
 
         hitPlayer = pygame.sprite.groupcollide(
             self.balls, self.playerGroup, False, False)
