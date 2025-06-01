@@ -39,24 +39,25 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+            break
 
     if not gameState:
         gameState, newGame = menu.showMenu(events, pause)
         if gameState and newGame:
             game = Game(screen)
             newGame = False
-        
-        #Si on passe du menu au jeu
+
+        # Si on passe du menu au jeu
         if gameState:
             playMusic = True
     else:
         gameState, pause = game.showGame()
         if playMusic:
-            pygame.mixer.music.load("./assets/sound/music" + str(random.randint(1,3)) + ".mp3")
+            pygame.mixer.music.load("./assets/sound/music" + str(random.randint(1, 3)) + ".mp3")
             pygame.mixer.music.play(loops=-1)
             playMusic = False
-        
-        #Si on passe du jeu au menu
+
+        # Si on passe du jeu au menu
         if not gameState:
             pygame.mixer.music.load("assets/sound/menu.mp3")
             pygame.mixer.music.play()

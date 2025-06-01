@@ -75,7 +75,10 @@ class Ball(pygame.sprite.Sprite):
         pygame.draw.polygon(self.image, self.color, self.points)
         self.image.blit(self.life_points_surface, self.life_points_surface_rect)
         
+        # Mettre à jour le masque de collision
+        self.mask = pygame.mask.from_surface(self.image)
         return self.life_points == 0
+        
         
     def decale(self, decale: int):
         self.rect.x += decale
