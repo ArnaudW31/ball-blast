@@ -74,11 +74,11 @@ class Game():
             self.frameNumberBeginLevel += 1
             self.screen.blit(self.texture, (-150, -100))
             self.screen.blit(FONT.render('NIVEAU ' + str(self.level), True, (0, 0, 0)),(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-            return True, False
+            return False, False
             
-        if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+        if pygame.key.get_pressed()[pygame.K_q]:
             if self.perdu:
-                return False,False
+                return True,False
             else:
                 return False, True
 
@@ -155,7 +155,7 @@ class Game():
             self.balls, self.playerGroup, False, False)
 
         # Si le perso a été touché par une balle, il perd
-        if len(hitPlayer) > 0:
+        if hitPlayer:
             self.perdu = True
             self.player.kill()
 
@@ -192,4 +192,152 @@ class Game():
                 self.nextLevel()
             self.frameNumberWinAnim += 1
 
-        return True, False
+        return False, False
+
+    def registerScore(self):
+        """Affiche une page pour saisir un pseudo de 3 caractères avec les flèches directionnelles"""
+        # Alphabet disponible
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        
+        # Pseudo de 3 caractères, initialisé à "AAA"
+        pseudo_chars = [0, 0, 0]  # Index dans l'alphabet
+        current_position = 0  # Position actuelle (0, 1 ou 2)
+        
+        input_active = True
+        cursor_visible = True
+        cursor_timer = 0
+        
+        while input_active:
+            cursor_timer += 1
+            if cursor_timer >= 20:  # Clignote toutes les 20 frames
+                cursor_visible = not cursor_visible
+                cursor_timer = 0
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    input_active = False
+                    pygame.quit()
+                    break
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        # Valider le pseudo et enregistrer le score
+                        pseudo = ''.join([alphabet[i] for i in pseudo_chars])
+                        self._saveScore(pseudo)
+                        input_active = False
+                    elif event.key == pygame.K_q:
+                        # Annuler la saisie
+                        input_active = False
+                    elif event.key == pygame.K_UP:
+                        # Lettre suivante dans l'alphabet
+                        pseudo_chars[current_position] = (pseudo_chars[current_position] + 1) % len(alphabet)
+                    elif event.key == pygame.K_DOWN:
+                        # Lettre précédente dans l'alphabet
+                        pseudo_chars[current_position] = (pseudo_chars[current_position] - 1) % len(alphabet)
+                    elif event.key == pygame.K_LEFT:
+                        # Position précédente
+                        current_position = (current_position - 1) % 3
+                    elif event.key == pygame.K_RIGHT:
+                        # Position suivante
+                        current_position = (current_position + 1) % 3
+            
+            # Affichage
+            self.screen.blit(self.texture, (-150, -100))
+            
+            # Titre
+            title_text = FONT.render("ENREGISTRER LE SCORE !", True, WHITE)
+            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100))
+            self.screen.blit(title_text, title_rect)
+            
+            # Score
+            score_text = FONT.render(f"Score: {self.player.score}", True, WHITE)
+            score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 60))
+            self.screen.blit(score_text, score_rect)
+            
+            # Instructions
+            instruction_text = FONT_SCORE.render("Entrez votre pseudo (3 lettres):", True, WHITE)
+            instruction_rect = instruction_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 20))
+            self.screen.blit(instruction_text, instruction_rect)
+            
+            # Affichage des 3 caractères
+            char_spacing = 60
+            start_x = SCREEN_WIDTH // 2 - char_spacing
+            
+            for i in range(3):
+                # Boîte pour chaque caractère
+                char_box = pygame.Surface((50, 50), pygame.SRCALPHA)
+                
+                # Couleur différente pour la position actuelle
+                if i == current_position:
+                    pygame.draw.rect(char_box, (255, 255, 0, 200), char_box.get_rect(), border_radius=5)  # Jaune
+                    pygame.draw.rect(char_box, BLACK, char_box.get_rect(), 3, border_radius=5)
+                else:
+                    pygame.draw.rect(char_box, (255, 255, 255, 200), char_box.get_rect(), border_radius=5)  # Blanc
+                    pygame.draw.rect(char_box, BLACK, char_box.get_rect(), 2, border_radius=5)
+                
+                # Lettre
+                letter = alphabet[pseudo_chars[i]]
+                letter_surface = FONT.render(letter, True, BLACK)
+                letter_rect = letter_surface.get_rect(center=(25, 25))
+                char_box.blit(letter_surface, letter_rect)
+                
+                # Position de la boîte
+                box_rect = char_box.get_rect(center=(start_x + i * char_spacing, SCREEN_HEIGHT // 2 + 20))
+                self.screen.blit(char_box, box_rect)
+                
+                # Curseur clignotant sous la position actuelle
+                if i == current_position and cursor_visible:
+                    cursor_y = SCREEN_HEIGHT // 2 + 50
+                    pygame.draw.line(self.screen, WHITE, 
+                                   (start_x + i * char_spacing - 15, cursor_y), 
+                                   (start_x + i * char_spacing + 15, cursor_y), 3)
+            
+            # Instructions de contrôle
+            controls_text = [
+                "↑↓ : Changer la lettre",
+                "←→ : Changer de position", 
+                "A : Valider",
+                "Q : Annuler"
+            ]
+            
+            for j, text in enumerate(controls_text):
+                control_surface = FONT_SCORE.render(text, True, WHITE)
+                control_rect = control_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 90 + j * 20))
+                self.screen.blit(control_surface, control_rect)
+            
+            pygame.display.flip()
+            pygame.time.Clock().tick(40)
+        
+        return False,False
+    
+    def _saveScore(self, pseudo):
+        """Sauvegarde le score avec le pseudo dans le fichier highscore, trié par score décroissant"""
+        try:
+            # Lire les scores existants
+            scores = []
+            try:
+                with open("highscore", "r", encoding="utf-8") as file:
+                    for line in file:
+                        line = line.strip()
+                        parts = line.split('-')
+                        pseudo_existing = parts[0]
+                        score_existing = int(parts[1])
+                        scores.append((pseudo_existing, score_existing))
+            except FileNotFoundError:
+                # Le fichier n'existe pas encore, on commence avec une liste vide
+                pass
+            
+            # Ajouter le nouveau score
+            scores.append((pseudo, self.player.score))
+            
+            # Trier par score décroissant (du meilleur au plus petit)
+            scores.sort(key=lambda x: x[1], reverse=True)
+            
+            # Réécrire le fichier avec tous les scores triés
+            with open("highscore", "w", encoding="utf-8") as file:
+                for pseudo_score, score in scores:
+                    file.write(f"{pseudo_score}-{score}\n")
+                    
+        except Exception as e:
+            print(f"Erreur lors de la sauvegarde du score: {e}")
+        
