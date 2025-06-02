@@ -20,6 +20,11 @@ screen: pygame.Surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 running = True
 clock = pygame.time.Clock()
 
+# sound1 = pygame.mixer.Sound("./assets/sound/bip.mp3")
+# sound2 = pygame.mixer.Sound("./assets/sound/explosion.mp3")
+# sound3 = pygame.mixer.Sound("./assets/sound/win.mp3")
+# sound4 = pygame.mixer.Sound("./assets/sound/pop.mp3")
+
 menu: Menu = Menu(screen)
 game: Game = None
 

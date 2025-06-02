@@ -18,7 +18,7 @@ class Game():
         self.perdu: bool = False
         self.shootCD: int = 0
         self.texture: pygame.Surface = pygame.transform.scale(
-            pygame.image.load('./assets/bg_pxl.jpg'), (SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5))
+            pygame.image.load('./assets/bg_pxl.jpg').convert(), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Compteurs de frames pour laisser du temps avant de passer à la suite
         self.frameNumberLoseAnim: int = 0
@@ -27,9 +27,9 @@ class Game():
         self.frameNumberBeginLevel: int = 0
         
         # Sons
-        self.sonExplosion = pygame.mixer.Sound("./assets/sound/explosion.mp3")
-        self.sonWin = pygame.mixer.Sound("./assets/sound/win.mp3")
-        self.sonPop = pygame.mixer.Sound("./assets/sound/pop.mp3")
+        # self.sonExplosion = sonExplosion
+        # self.sonWin = sonWin
+        # self.sonPop = sonPop
         
         self.shootCD: int = 0
         self.path: str = "./assets/explosion_frames/frame-"
@@ -68,15 +68,15 @@ class Game():
         self.frameNumberSpawnBalls : int = 0
         self.frameNumberBeginLevel = 0
 
-    def showGame(self) -> tuple[bool, bool]:
+    def showGame(self):
         
         if self.frameNumberBeginLevel < 60:
             self.frameNumberBeginLevel += 1
-            self.screen.blit(self.texture, (-150, -100))
+            self.screen.blit(self.texture, (0,0))
             self.screen.blit(FONT.render('NIVEAU ' + str(self.level), True, (0, 0, 0)),(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             return False, False
             
-        if pygame.key.get_pressed()[pygame.K_q]:
+        if pygame.key.get_pressed()[pygame.K_f]:
             if self.perdu:
                 return True,False
             else:
@@ -100,7 +100,7 @@ class Game():
         self.all_sprites.update()
 
         # Check for collisions
-        hitBalls: dict[Ball, list[Bullet]] = pygame.sprite.groupcollide(
+        hitBalls = pygame.sprite.groupcollide(
             self.balls, self.bullets, False, True)
         for hit in hitBalls:
 
@@ -109,7 +109,7 @@ class Game():
             if destroyed:
                 self.player.score += hit.base_life_points
                 if hit.level < len(self.ball_level)-1:
-                    pygame.mixer.Sound.play(self.sonPop)
+                    #pygame.mixer.Sound.play(self.sonPop)
                     # On crée une boule aux mêmes co que la boule détruite
                     ball1 = Ball(
                         hit.rect.x, hit.rect.y, self.ball_level[hit.level+1][1], hit.level+1, self.ball_level[hit.level+1][0])
@@ -140,13 +140,13 @@ class Game():
         # Draw / render
 
         # On render le fond en premier sinon tout est derrière
-        self.screen.blit(self.texture, (-150, -100))
+        self.screen.blit(self.texture, (0,0))
 
         self.all_sprites.draw(self.screen)
 
         # On affiche le score
         self.score_box = pygame.Surface((150, 50), pygame.SRCALPHA)
-        pygame.draw.rect(self.score_box, (255, 255, 255, 180), self.score_box.get_rect(), border_radius=10)
+        pygame.draw.rect(self.score_box, (255, 255, 255, 180), self.score_box.get_rect())
         self.score_texte = FONT_SCORE.render("Score : " + str(self.player.score), True, (0, 0, 0))
         self.score_box.blit(self.score_texte, (10, 10))
         self.screen.blit(self.score_box, (10, 10))
@@ -164,7 +164,7 @@ class Game():
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             if self.frameNumberLoseAnim == 0:
-                pygame.mixer.Sound.play(self.sonExplosion)
+                #pygame.mixer.Sound.play(self.sonExplosion)
                 pygame.mixer.music.load("./assets/sound//musicdeath.mp3")
                 pygame.mixer.music.play()
 
@@ -185,8 +185,8 @@ class Game():
             self.screen.blit(
                 text_surface, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             
-            if self.frameNumberWinAnim == 0 and not self.perdu:
-                pygame.mixer.Sound.play(self.sonWin)
+            #if self.frameNumberWinAnim == 0 and not self.perdu:
+                #pygame.mixer.Sound.play(self.sonWin)
             
             if self.frameNumberWinAnim == 240 and not self.perdu:
                 self.nextLevel()
@@ -220,12 +220,12 @@ class Game():
                     break
                 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
+                    if event.key == pygame.K_r:
                         # Valider le pseudo et enregistrer le score
                         pseudo = ''.join([alphabet[i] for i in pseudo_chars])
                         self._saveScore(pseudo)
                         input_active = False
-                    elif event.key == pygame.K_q:
+                    elif event.key == pygame.K_f:
                         # Annuler la saisie
                         input_active = False
                     elif event.key == pygame.K_UP:
@@ -242,7 +242,7 @@ class Game():
                         current_position = (current_position + 1) % 3
             
             # Affichage
-            self.screen.blit(self.texture, (-150, -100))
+            self.screen.blit(self.texture, (0,0))
             
             # Titre
             title_text = FONT.render("ENREGISTRER LE SCORE !", True, WHITE)
@@ -296,8 +296,8 @@ class Game():
             controls_text = [
                 "↑↓ : Changer la lettre",
                 "←→ : Changer de position", 
-                "A : Valider",
-                "Q : Annuler"
+                "R : Valider",
+                "F : Annuler"
             ]
             
             for j, text in enumerate(controls_text):
